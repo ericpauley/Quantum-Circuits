@@ -22,7 +22,7 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
         if(event.getItem() == null || event.getClickedBlock() == null || event.getItem().getType() != Material.REDSTONE){
             return;
         }
-        if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.use"))&&plugin.USE_PERMISSIONS) {
+        if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS) {
             return;
         }
 
