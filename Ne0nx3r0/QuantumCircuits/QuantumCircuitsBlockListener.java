@@ -36,33 +36,71 @@ public class QuantumCircuitsBlockListener extends BlockListener {
     }
 
     private static boolean isOn(Block activate){
-        int iData = (int) activate.getData();
-
-        if((iData&0x08) == 0x08){
-            return true;
-        }
-        return false;
+    	if(activate.getType() == Material.LEVER){
+	        int iData = (int) activate.getData();
+	
+	        if((iData&0x08) == 0x08){
+	            return true;
+	        }
+	        return false;
+    	}else{
+	        int iData = (int) activate.getData();
+	    	
+	        if((iData&0x04) == 0x04){
+	            return true;
+	        }
+	        return false;
+    	}
     }
 
-    private static void setOn(Block block){
-        setReceiver(block,true);
+    private static void setOn(Block block, Block block2){
+        setReceiver(block,block2,true);
     }
-    private static void setOff(Block block){
-        setReceiver(block,false);
+    private static void setOff(Block block, Block block2){
+        setReceiver(block,block2,false);
     }
-    private static void setReceiver(Block block,boolean on){
-        if(block.getType() != Material.LEVER){
-            return;
-        }
+    private static void setReceiver(Block block, Block block2,boolean on){
+        if(block.getType() == Material.LEVER){
 
-        int iData = (int) block.getData();
+	        int iData = (int) block.getData();
+	
+	        if(on && (iData&0x08) != 0x08){
+	            iData|=0x08;//send power on
+	            block.setData((byte) iData);
+	        }else if(!on && (iData&0x08) == 0x08){
+	            iData^=0x08;//send power off
+	            block.setData((byte) iData);
+	        }
+        }else if(block.getType() == Material.TRAP_DOOR){
 
-        if(on && (iData&0x08) != 0x08){
-            iData|=0x08;//send power on
-            block.setData((byte) iData);
-        }else if(!on && (iData&0x08) == 0x08){
-            iData^=0x08;//send power off
-            block.setData((byte) iData);
+	        int iData = (int) block.getData();
+	
+	        if(on && (iData&0x04) != 0x04){
+	            iData|=0x04;//send power on
+	            block.setData((byte) iData);
+	        }else if(!on && (iData&0x04) == 0x04){
+	            iData^=0x04;//send power off
+	            block.setData((byte) iData);
+	        }
+        }else if(block.getType() == Material.IRON_DOOR_BLOCK || block.getType() == Material.WOODEN_DOOR){
+
+	        int iData = (int) block.getData();
+	        int iData2 = (int) block2.getData();
+	
+	        if(on && (iData&0x04) != 0x04){
+	            iData|=0x04;//send power on
+	            block.setData((byte) iData);
+	        }else if(!on && (iData&0x04) == 0x04){
+	            iData^=0x04;//send power off
+	            block.setData((byte) iData);
+	        }
+	        if(on && (iData2&0x04) != 0x04){
+	            iData2|=0x04;//send power on
+	            block2.setData((byte) iData2);
+	        }else if(!on && (iData2&0x04) == 0x04){
+	            iData2^=0x04;//send power off
+	            block2.setData((byte) iData2);
+	        }
         }
     }
 
@@ -74,42 +112,39 @@ public class QuantumCircuitsBlockListener extends BlockListener {
         }
 
         Block bReceiver;
+        Block bReceiver2;
 
         try{
             bReceiver = activator.getWorld().getBlockAt(Integer.parseInt(sBlockLines[1]),Integer.parseInt(sBlockLines[2]),Integer.parseInt(sBlockLines[3]));
+            bReceiver2 = activator.getWorld().getBlockAt(Integer.parseInt(sBlockLines[1]),Integer.parseInt(sBlockLines[2])+1,Integer.parseInt(sBlockLines[3]));
         }
         catch(Exception e){
             return;
         }
         
         // This check runs again in seton/off, but we do it here to filter out broken links
-        if(bReceiver.getType() == Material.LEVER){
+        if(bReceiver.getType() == Material.LEVER || bReceiver.getType() == Material.IRON_DOOR_BLOCK || bReceiver.getType() == Material.WOODEN_DOOR || bReceiver.getType() == Material.TRAP_DOOR){
             if(sBlockLines[0].equalsIgnoreCase("quantum")){
                 //makes receiver match source status
                 if(iNewCurrent > 0){
-                    setOn(bReceiver);
+                    setOn(bReceiver,bReceiver2);
                 }else{
-                    setOff(bReceiver);
+                    setOff(bReceiver,bReceiver2);
                 }
             }else if(sBlockLines[0].equalsIgnoreCase("qtoggle")){
                 //toggles receiver when powered
                 if(iNewCurrent > 0){
-                    if(isOn(bReceiver)){
-                        setOff(bReceiver);
-                    }
-                    else{
-                        setOn(bReceiver);
-                    }
+                	setReceiver(bReceiver,bReceiver2,!isOn(bReceiver));
                 }
             }else if(sBlockLines[0].equalsIgnoreCase("qon")){
                 //always set on when powered
                 if(iNewCurrent > 0){
-                    setOn(bReceiver);
+                    setOn(bReceiver,bReceiver2);
                 }
             }else if(sBlockLines[0].equalsIgnoreCase("qoff")){
                 //always set off when powered
                 if(iNewCurrent > 0){
-                    setOff(bReceiver);
+                    setOff(bReceiver,bReceiver2);
                 }
             }else if (sBlockLines[0].length() > 4 && sBlockLines[0].substring(0,4).equalsIgnoreCase("qlag")){
                 String[] sLagTimes = sBlockLines[0].split("/");
@@ -134,25 +169,27 @@ public class QuantumCircuitsBlockListener extends BlockListener {
                 //convert to seconds
                 iLagTime = iLagTime * 20;
 
-                plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin,new lagSetter(bReceiver,powerOn),iLagTime);
+                plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin,new lagSetter(bReceiver,bReceiver2,powerOn),iLagTime);
             }
         }
     }
 
     private static class lagSetter implements Runnable{
         private final Block blockToChange;
+        private final Block blockToChange2;
         private final boolean setPositive;
 
-        lagSetter(Block blockToChange,boolean setPositive){
+        lagSetter(Block blockToChange,Block blockToChange2,boolean setPositive){
             this.blockToChange = blockToChange;
+            this.blockToChange2 = blockToChange2;
             this.setPositive = setPositive;
         }
         
         public void run(){
             if(this.setPositive){
-                setOn(this.blockToChange);
+                setOn(this.blockToChange,this.blockToChange2);
             }else{
-                setOff(this.blockToChange);
+                setOff(this.blockToChange,this.blockToChange2);
             }
         }
     }
