@@ -22,12 +22,23 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
         if(event.getItem() == null || event.getClickedBlock() == null || event.getItem().getType() != Material.REDSTONE){
             return;
         }
+        if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.use"))&&plugin.USE_PERMISSIONS) {
+            return;
+        }
 
-        if(event.getClickedBlock().getType() == Material.LEVER){
+        if(event.getClickedBlock().getType() == Material.LEVER || event.getClickedBlock().getType() == Material.TRAP_DOOR){
             Location lClicked = event.getClickedBlock().getLocation();
 
             mLastClicks.put(event.getPlayer().getName(),new int[] {lClicked.getBlockX(),lClicked.getBlockY(),lClicked.getBlockZ()});
 
+            event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE+"Quantum location stored!");
+        }else if(event.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK || event.getClickedBlock().getType() == Material.WOODEN_DOOR){
+        	Location lClicked = event.getClickedBlock().getLocation();
+        	if (event.getClickedBlock().getRelative(0,-1,0).getType() == Material.IRON_DOOR_BLOCK || event.getClickedBlock().getRelative(0,-1,0).getType() == Material.WOODEN_DOOR){
+        		mLastClicks.put(event.getPlayer().getName(),new int[] {lClicked.getBlockX(),lClicked.getBlockY()-1,lClicked.getBlockZ()});
+        	}else{
+        		mLastClicks.put(event.getPlayer().getName(),new int[] {lClicked.getBlockX(),lClicked.getBlockY(),lClicked.getBlockZ()});
+        	}
             event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE+"Quantum location stored!");
         }
         else if(mLastClicks.containsKey(event.getPlayer().getName()) && (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN)){
