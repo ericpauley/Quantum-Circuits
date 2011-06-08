@@ -126,11 +126,10 @@ public class QuantumCircuitsBlockListener extends BlockListener {
         if(bReceiver.getType() == Material.LEVER || bReceiver.getType() == Material.IRON_DOOR_BLOCK || bReceiver.getType() == Material.WOODEN_DOOR || bReceiver.getType() == Material.TRAP_DOOR){
             if(sBlockLines[0].equalsIgnoreCase("quantum")){
                 //makes receiver match source status
-                if(iNewCurrent > 0){
-                    setOn(bReceiver,bReceiver2);
-                }else{
-                    setOff(bReceiver,bReceiver2);
-                }
+            	setReceiver(bReceiver,bReceiver2,iNewCurrent>0);
+            }else if(sBlockLines[0].equalsIgnoreCase("qreverse")){
+                //makes receiver match the reverse of source status
+            	setReceiver(bReceiver,bReceiver2,!(iNewCurrent>0));
             }else if(sBlockLines[0].equalsIgnoreCase("qtoggle")){
                 //toggles receiver when powered
                 if(iNewCurrent > 0){
