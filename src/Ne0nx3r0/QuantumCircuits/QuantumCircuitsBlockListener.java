@@ -2,9 +2,11 @@ package Ne0nx3r0.QuantumCircuits;
 
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.Block;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 public class QuantumCircuitsBlockListener extends BlockListener {
@@ -190,6 +192,26 @@ public class QuantumCircuitsBlockListener extends BlockListener {
             }else{
                 setOff(this.blockToChange,this.blockToChange2);
             }
+        }
+    }
+    
+    public void onSignChange(SignChangeEvent event){
+        event.getPlayer().sendMessage(ChatColor.RED+"TEST");
+    	String[] sLines = event.getLines();
+        if(sLines[0].equalsIgnoreCase("quantum")
+        || sLines[0].equalsIgnoreCase("qreverse")
+        || sLines[0].equalsIgnoreCase("qtoggle")
+        || sLines[0].equalsIgnoreCase("qon")
+        || sLines[0].equalsIgnoreCase("qoff")
+        || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))){
+        	if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS){
+        		event.setCancelled(true);
+        		event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to create Quantum signs.");
+        	}else{
+        		event.setLine(1, "");
+        		event.setLine(2, "");
+        		event.setLine(3, "");
+        	}
         }
     }
 }

@@ -50,7 +50,7 @@ public class QuantumCircuits extends JavaPlugin{
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.REDSTONE_CHANGE, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.SIGN_CHANGE, playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
 
         PluginDescriptionFile pdfFile = this.getDescription();
         if(!USE_PERMISSIONS){

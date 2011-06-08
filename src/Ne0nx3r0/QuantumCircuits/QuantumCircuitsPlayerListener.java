@@ -22,17 +22,22 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
         if(event.getItem() == null || event.getClickedBlock() == null || event.getItem().getType() != Material.REDSTONE){
             return;
         }
-        if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS) {
-            return;
-        }
 
         if(event.getClickedBlock().getType() == Material.LEVER || event.getClickedBlock().getType() == Material.TRAP_DOOR){
-            Location lClicked = event.getClickedBlock().getLocation();
+            if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
+                event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to store Quantum coordinates.");
+            	return;
+            }
+        	Location lClicked = event.getClickedBlock().getLocation();
 
             mLastClicks.put(event.getPlayer().getName(),new int[] {lClicked.getBlockX(),lClicked.getBlockY(),lClicked.getBlockZ()});
 
             event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE+"Quantum location stored!");
         }else if(event.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK || event.getClickedBlock().getType() == Material.WOODEN_DOOR){
+            if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
+                event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to store Quantum coordinates.");
+            	return;
+            }
         	Location lClicked = event.getClickedBlock().getLocation();
         	if (event.getClickedBlock().getRelative(0,-1,0).getType() == Material.IRON_DOOR_BLOCK || event.getClickedBlock().getRelative(0,-1,0).getType() == Material.WOODEN_DOOR){
         		mLastClicks.put(event.getPlayer().getName(),new int[] {lClicked.getBlockX(),lClicked.getBlockY()-1,lClicked.getBlockZ()});
@@ -46,10 +51,22 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
             String[] sLines = sbClickedSign.getLines();
 
             if(sLines[0].equalsIgnoreCase("quantum")
+            || sLines[0].equalsIgnoreCase("qreverse")
             || sLines[0].equalsIgnoreCase("qtoggle")
             || sLines[0].equalsIgnoreCase("qon")
             || sLines[0].equalsIgnoreCase("qoff")
             || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))){
+            	if(sLines[1]!=""||sLines[2]!=""||sLines[3]!=""){
+                    if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.modify"))&&plugin.USE_PERMISSIONS) {
+                        event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to modify Quantum signs.");
+                    	return;
+                    }
+            	}else if((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.new"))&&plugin.USE_PERMISSIONS){
+                    event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to initialize Quantum signs.");
+                	return;
+            	}
+            	
+            	
                 int[] iCoordinates = mLastClicks.get(event.getPlayer().getName());
 
                 sbClickedSign.setLine(1,Integer.toString(iCoordinates[0]));
