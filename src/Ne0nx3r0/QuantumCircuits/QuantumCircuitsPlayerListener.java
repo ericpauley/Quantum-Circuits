@@ -51,11 +51,17 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
             String[] sLines = sbClickedSign.getLines();
 
             if(sLines[0].equalsIgnoreCase("quantum")
+            || sLines[0].equalsIgnoreCase("[quantum]")
             || sLines[0].equalsIgnoreCase("qreverse")
+            || sLines[0].equalsIgnoreCase("[qreverse]")
             || sLines[0].equalsIgnoreCase("qtoggle")
+            || sLines[0].equalsIgnoreCase("[qtoggle]")
             || sLines[0].equalsIgnoreCase("qon")
+            || sLines[0].equalsIgnoreCase("[qon]")
             || sLines[0].equalsIgnoreCase("qoff")
-            || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))){
+            || sLines[0].equalsIgnoreCase("[qoff]")
+            || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))
+            || (sLines[0].length() > 6 && sLines[0].substring(0,5).equalsIgnoreCase("[qlag") && sLines[0].substring(sLines[0].length()-1).equalsIgnoreCase("]"))){
             	if(sLines[1]!=""||sLines[2]!=""||sLines[3]!=""){
                     if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.modify"))&&plugin.USE_PERMISSIONS) {
                         event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to modify Quantum signs.");

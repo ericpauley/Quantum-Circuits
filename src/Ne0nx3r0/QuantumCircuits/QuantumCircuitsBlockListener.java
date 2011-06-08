@@ -126,28 +126,29 @@ public class QuantumCircuitsBlockListener extends BlockListener {
         
         // This check runs again in seton/off, but we do it here to filter out broken links
         if(bReceiver.getType() == Material.LEVER || bReceiver.getType() == Material.IRON_DOOR_BLOCK || bReceiver.getType() == Material.WOODEN_DOOR || bReceiver.getType() == Material.TRAP_DOOR){
-            if(sBlockLines[0].equalsIgnoreCase("quantum")){
+            if(sBlockLines[0].equalsIgnoreCase("quantum")||sBlockLines[0].equalsIgnoreCase("[quantum]")){
                 //makes receiver match source status
             	setReceiver(bReceiver,bReceiver2,iNewCurrent>0);
-            }else if(sBlockLines[0].equalsIgnoreCase("qreverse")){
+            }else if(sBlockLines[0].equalsIgnoreCase("qreverse")||sBlockLines[0].equalsIgnoreCase("[qreverse]")){
                 //makes receiver match the reverse of source status
             	setReceiver(bReceiver,bReceiver2,!(iNewCurrent>0));
-            }else if(sBlockLines[0].equalsIgnoreCase("qtoggle")){
+            }else if(sBlockLines[0].equalsIgnoreCase("qtoggle")||sBlockLines[0].equalsIgnoreCase("[qtoggle]")){
                 //toggles receiver when powered
                 if(iNewCurrent > 0){
                 	setReceiver(bReceiver,bReceiver2,!isOn(bReceiver));
                 }
-            }else if(sBlockLines[0].equalsIgnoreCase("qon")){
+            }else if(sBlockLines[0].equalsIgnoreCase("qon")||sBlockLines[0].equalsIgnoreCase("[qon]")){
                 //always set on when powered
                 if(iNewCurrent > 0){
                     setOn(bReceiver,bReceiver2);
                 }
-            }else if(sBlockLines[0].equalsIgnoreCase("qoff")){
+            }else if(sBlockLines[0].equalsIgnoreCase("qoff")||sBlockLines[0].equalsIgnoreCase("[qoff]")){
                 //always set off when powered
                 if(iNewCurrent > 0){
                     setOff(bReceiver,bReceiver2);
                 }
-            }else if (sBlockLines[0].length() > 4 && sBlockLines[0].substring(0,4).equalsIgnoreCase("qlag")){
+            }else if (sBlockLines[0].length() > 4 && sBlockLines[0].substring(0,4).equalsIgnoreCase("qlag")
+            || (sBlockLines[0].length() > 6 && sBlockLines[0].substring(0,5).equalsIgnoreCase("[qlag") && sBlockLines[0].substring(sBlockLines[0].length()-1).equalsIgnoreCase("]"))){
                 String[] sLagTimes = sBlockLines[0].split("/");
 
                 boolean powerOn;
@@ -157,7 +158,7 @@ public class QuantumCircuitsBlockListener extends BlockListener {
                     iLagTime = Integer.parseInt(sLagTimes[1]);
                     powerOn = true;
                 }else{
-                    iLagTime = Integer.parseInt(sLagTimes[2]);
+                    iLagTime = Integer.parseInt(sLagTimes[2].substring(0,sLagTimes[2].length()-1));
                     powerOn = false;
                 }
 
@@ -199,11 +200,17 @@ public class QuantumCircuitsBlockListener extends BlockListener {
         event.getPlayer().sendMessage(ChatColor.RED+"TEST");
     	String[] sLines = event.getLines();
         if(sLines[0].equalsIgnoreCase("quantum")
+        || sLines[0].equalsIgnoreCase("[quantum]")
         || sLines[0].equalsIgnoreCase("qreverse")
+        || sLines[0].equalsIgnoreCase("[qreverse]")
         || sLines[0].equalsIgnoreCase("qtoggle")
+        || sLines[0].equalsIgnoreCase("[qtoggle]")
         || sLines[0].equalsIgnoreCase("qon")
+        || sLines[0].equalsIgnoreCase("[qon]")
         || sLines[0].equalsIgnoreCase("qoff")
-        || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))){
+        || sLines[0].equalsIgnoreCase("[qoff]")
+        || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))
+        || (sLines[0].length() > 6 && sLines[0].substring(0,5).equalsIgnoreCase("[qlag") && sLines[0].substring(sLines[0].length()-1).equalsIgnoreCase("]"))){
         	if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS){
         		event.setCancelled(true);
         		event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to create Quantum signs.");
