@@ -15,7 +15,7 @@ public class QuantumCircuits extends JavaPlugin{
     private final QuantumCircuitsPlayerListener playerListener = new QuantumCircuitsPlayerListener(this);
     public int MAX_LAG_TIME = 300;
     public boolean USE_PERMISSIONS = false;
-    public static PermissionHandler permissionHandler;
+    public PermissionHandler permissionHandler;
     
     public void onDisable(){
         System.out.println("[Quantum] Quantum Circuits Disabled");
@@ -50,6 +50,7 @@ public class QuantumCircuits extends JavaPlugin{
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvent(Event.Type.REDSTONE_CHANGE, blockListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.SIGN_CHANGE, playerListener, Priority.Normal, this);
 
         PluginDescriptionFile pdfFile = this.getDescription();
         if(!USE_PERMISSIONS){
