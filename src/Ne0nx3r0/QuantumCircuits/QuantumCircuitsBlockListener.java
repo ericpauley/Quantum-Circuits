@@ -211,7 +211,7 @@ public class QuantumCircuitsBlockListener extends BlockListener {
         || sLines[0].equalsIgnoreCase("[qoff]")
         || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))
         || (sLines[0].length() > 6 && sLines[0].substring(0,5).equalsIgnoreCase("[qlag") && sLines[0].substring(sLines[0].length()-1).equalsIgnoreCase("]"))){
-        	if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS){
+        	if ((!QuantumCircuits.permissionHandler.has(event.getPlayer(), "quantum.create"))&&plugin.USE_PERMISSIONS){
         		event.setCancelled(true);
         		event.getBlock().setType(Material.AIR);
         		event.getPlayer().getInventory().addItem(new ItemStack(Material.SIGN,1));

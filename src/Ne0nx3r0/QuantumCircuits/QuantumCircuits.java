@@ -1,5 +1,6 @@
 package Ne0nx3r0.QuantumCircuits;
 
+import java.util.logging.Logger;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
@@ -15,10 +16,11 @@ public class QuantumCircuits extends JavaPlugin{
     private final QuantumCircuitsPlayerListener playerListener = new QuantumCircuitsPlayerListener(this);
     public int MAX_LAG_TIME = 300;
     public boolean USE_PERMISSIONS = false;
-    public PermissionHandler permissionHandler;
+    public static PermissionHandler permissionHandler;
+    public Logger log = Logger.getLogger("Minecraft");
     
     public void onDisable(){
-        System.out.println("[Quantum] Quantum Circuits Disabled");
+        log.info("[Quantum] Quantum Circuits Disabled");
     }
 
     public void onEnable(){
@@ -29,7 +31,7 @@ public class QuantumCircuits extends JavaPlugin{
 
         //set default values if necessary
         if(iMaxLagTime == -1){
-            System.out.println("[Quantum] Creating config file...");
+            log.info("[Quantum] Creating config file...");
             config.setProperty("maxlagtime",300);
             iMaxLagTime = 300;
             config.save();
@@ -54,9 +56,9 @@ public class QuantumCircuits extends JavaPlugin{
 
         PluginDescriptionFile pdfFile = this.getDescription();
         if(!USE_PERMISSIONS){
-        	System.out.println("[Quantum] "+pdfFile.getName() + " version " + pdfFile.getVersion() + " ENABLED" );
+        	log.info("[Quantum] "+pdfFile.getName() + " version " + pdfFile.getVersion() + " ENABLED" );
         }else{
-        	System.out.println("[Quantum] "+pdfFile.getName() + " version " + pdfFile.getVersion() + " ENABLED WITH PERMISSIONS" );
+        	log.info("[Quantum] "+pdfFile.getName() + " version " + pdfFile.getVersion() + " ENABLED WITH PERMISSIONS" );
         }
     }
     
@@ -67,7 +69,7 @@ public class QuantumCircuits extends JavaPlugin{
             if (permissionsPlugin != null) {
                 permissionHandler = ((Permissions) permissionsPlugin).getHandler();
             } else {
-                System.out.println("Permission system not detected, defaulting to OP");
+                log.info("Permission system not detected, defaulting to OP");
             }
         }
     }

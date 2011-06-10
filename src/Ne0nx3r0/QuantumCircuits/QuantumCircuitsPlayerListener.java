@@ -24,7 +24,7 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
         }
 
         if(event.getClickedBlock().getType() == Material.LEVER || event.getClickedBlock().getType() == Material.TRAP_DOOR){
-            if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
+            if ((!QuantumCircuits.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
                 event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to store Quantum coordinates.");
             	return;
             }
@@ -34,7 +34,7 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
 
             event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE+"Quantum location stored!");
         }else if(event.getClickedBlock().getType() == Material.IRON_DOOR_BLOCK || event.getClickedBlock().getType() == Material.WOODEN_DOOR){
-            if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
+            if ((!QuantumCircuits.permissionHandler.has(event.getPlayer(), "quantum.transfer.store"))&&plugin.USE_PERMISSIONS) {
                 event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to store Quantum coordinates.");
             	return;
             }
@@ -63,11 +63,11 @@ public class QuantumCircuitsPlayerListener extends PlayerListener {
             || (sLines[0].length() > 4 && sLines[0].substring(0,4).equalsIgnoreCase("qlag"))
             || (sLines[0].length() > 6 && sLines[0].substring(0,5).equalsIgnoreCase("[qlag") && sLines[0].substring(sLines[0].length()-1).equalsIgnoreCase("]"))){
             	if(sLines[1]!=""||sLines[2]!=""||sLines[3]!=""){
-                    if ((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.modify"))&&plugin.USE_PERMISSIONS) {
+                    if ((!QuantumCircuits.permissionHandler.has(event.getPlayer(), "quantum.transfer.modify"))&&plugin.USE_PERMISSIONS) {
                         event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to modify Quantum signs.");
                     	return;
                     }
-            	}else if((!plugin.permissionHandler.has(event.getPlayer(), "quantum.transfer.new"))&&plugin.USE_PERMISSIONS){
+            	}else if((!QuantumCircuits.permissionHandler.has(event.getPlayer(), "quantum.transfer.new"))&&plugin.USE_PERMISSIONS){
                     event.getPlayer().sendMessage(ChatColor.RED+"You don't have permission to initialize Quantum signs.");
                 	return;
             	}
